@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medveda — Treatment Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&family=Cabinet+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <canvas id="med-canvas"></canvas>
+  <div class="bg-orbs">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+  <div class="grid-bg"></div>
+  <div class="app">
+
+    <!-- HEADER -->
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🧬</div>
+        <div>
+          <div class="logo-text">Medveda</div>
+          <div class="logo-sub">Treatment & Condition Intelligence</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="lang-wrap">
+          <button class="header-pill" id="langBtn" onclick="App.toggleLangMenu()">
+            <span id="langFlag">🌐</span> <span id="langLabel">EN</span> <span class="pill-arrow">▾</span>
+          </button>
+          <div class="lang-menu" id="langMenu">
+            <div class="lang-opt active" data-lang="en" onclick="App.setLang('en')"><span class="lang-opt-flag">🇺🇸</span> English</div>
+            <div class="lang-opt" data-lang="hi" onclick="App.setLang('hi')"><span class="lang-opt-flag">🇮🇳</span> हिन्दी</div>
+            <div class="lang-opt" data-lang="es" onclick="App.setLang('es')"><span class="lang-opt-flag">🇪🇸</span> Español</div>
+            <div class="lang-opt" data-lang="fr" onclick="App.setLang('fr')"><span class="lang-opt-flag">🇫🇷</span> Français</div>
+            <div class="lang-opt" data-lang="zh" onclick="App.setLang('zh')"><span class="lang-opt-flag">🇨🇳</span> 中文</div>
+            <div class="lang-opt" data-lang="ar" onclick="App.setLang('ar')"><span class="lang-opt-flag">🇸🇦</span> العربية</div>
+            <div class="lang-opt" data-lang="pt" onclick="App.setLang('pt')"><span class="lang-opt-flag">🇧🇷</span> Português</div>
+            <div class="lang-opt" data-lang="de" onclick="App.setLang('de')"><span class="lang-opt-flag">🇩🇪</span> Deutsch</div>
+            <div class="lang-opt" data-lang="ja" onclick="App.setLang('ja')"><span class="lang-opt-flag">🇯🇵</span> 日本語</div>
+            <div class="lang-opt" data-lang="ru" onclick="App.setLang('ru')"><span class="lang-opt-flag">🇷🇺</span> Русский</div>
+            <div class="lang-opt" data-lang="ko" onclick="App.setLang('ko')"><span class="lang-opt-flag">🇰🇷</span> 한국어</div>
+            <div class="lang-opt" data-lang="bn" onclick="App.setLang('bn')"><span class="lang-opt-flag">🇧🇩</span> বাংলা</div>
+          </div>
+        </div>
+        <button class="header-pill theme-toggle" id="themeBtn" onclick="App.toggleTheme()">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <div class="backend-status" id="backendStatus">
+          <span class="dot" id="beDot"></span>
+          <span id="beText">Checking backend…</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-badge"><span class="live-dot"></span>Python FastAPI Backend · Official Health Data</div>
+        <h1>Crowdsourced Treatment<br>& Condition Intelligence</h1>
+        <p class="hero-sub">Adverse events, treatment plans, recovery timelines, complications, MoHFW guidelines and
+          INR/USD costs — powered by a live Python backend.</p>
+
+        <div class="search-bar">
+          <input id="q" type="text" placeholder="Enter drug or condition (e.g. metformin, ibuprofen, aspirin…)"
+            autocomplete="off" />
+          <button class="btn-primary" id="srchBtn" onclick="App.analyze()">Search All DBs →</button>
+        </div>
+        <div class="chips">
+          <span class="chip" onclick="App.quick('diabetes')">🩺 Diabetes</span>
+          <span class="chip" onclick="App.quick('hypertension')">🩺 Hypertension</span>
+          <span class="chip" onclick="App.quick('malaria')">🩺 Malaria</span>
+          <span class="chip" onclick="App.quick('metformin')">💊 Metformin</span>
+          <span class="chip" onclick="App.quick('amoxicillin')">💊 Amoxicillin</span>
+          <span class="chip" onclick="App.quick('ibuprofen')">💊 Ibuprofen</span>
+        </div>
+      </section>
+
+      <!-- TAB BAR -->
+      <nav class="tab-bar">
+        <button class="tab-btn active" onclick="App.tab('overview')" id="t-overview">📊 Overview</button>
+        <button class="tab-btn" onclick="App.tab('complications')" id="t-complications" style="display:none">⚠️
+          Complications</button>
+        <button class="tab-btn" onclick="App.tab('sideeff')" id="t-sideeff">⚠️ Side Effects</button>
+        <button class="tab-btn" onclick="App.tab('treatment')" id="t-treatment">🏥 Treatment</button>
+        <button class="tab-btn" onclick="App.tab('timeline')" id="t-timeline">📅 Timeline</button>
+        <button class="tab-btn" onclick="App.tab('interact')" id="t-interact">🔄 Interactions</button>
+        <button class="tab-btn" onclick="App.tab('label')" id="t-label">📋 Drug Label</button>
+        <button class="tab-btn" onclick="App.tab('cost')" id="t-cost">💰 Cost</button>
+        <button class="tab-btn" onclick="App.tab('mohfw')" id="t-mohfw">🇮🇳 MoHFW Info</button>
+        <button class="tab-btn" onclick="App.tab('compare')" id="t-compare">⚖️ Compare</button>
+        <button class="tab-btn" onclick="App.tab('report')" id="t-report">📄 Export</button>
+      </nav>
+
+      <div class="tab-panel active" id="p-overview">
+        <div id="c-overview">
+          <div class="empty-state">
+            <div class="empty-icon">🧬</div>
+            <div class="empty-title">Search a drug or condition</div>
+            <div class="empty-sub">Enter a drug (e.g. metformin) or a condition (e.g. diabetes) to view treatment plans,
+              recovery timelines, and MoHFW guidelines.</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="p-complications">
+        <div id="c-complications">
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <div class="empty-title">Search first</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="p-sideeff">
+        <div id="c-sideeff">
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <div class="empty-title">Search first</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="p-treatment">
+        <div id="c-treatment">
+          <div class="empty-state">
+            <div class="empty-icon">🏥</div>
+            <div class="empty-title">Search first</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="p-timeline">
+        <div id="c-timeline">
+          <div class="empty-state">
+            <div class="empty-icon">📅</div>
+            <div class="empty-title">Search first</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="p-interact">
+        <div id="c-interact">
+          <div class="empty-state">
+            <div class="empty-icon">🔄</div>
+            <div class="empty-title">Search first</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="p-label">
+        <div id="c-label">
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <div class="empty-title">Search first</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="p-cost">
+        <div id="c-cost">
+          <div class="empty-state">
+            <div class="empty-icon">💰</div>
+            <div class="empty-title">Search first</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="p-mohfw">
+        <div id="c-mohfw">
+          <div class="empty-state">
+            <div class="empty-icon">🇮🇳</div>
+            <div class="empty-title">Search first</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="p-compare">
+        <div class="cmp-inputs" id="cmpInputs">
+          <div>
+            <div class="cmp-lbl" id="cmpLblA">Drug / Condition A</div><input class="cmp-input" id="cmpA"
+              placeholder="e.g. metformin or diabetes" />
+          </div>
+          <div class="cmp-vs">VS</div>
+          <div>
+            <div class="cmp-lbl" id="cmpLblB">Drug / Condition B</div><input class="cmp-input" id="cmpB"
+              placeholder="e.g. ibuprofen or hypertension" />
+          </div>
+        </div>
+        <button class="btn-primary" id="cmpBtn" onclick="App.doCompare()" style="margin-bottom:24px">Compare →</button>
+        <div id="c-compare">
+          <div class="empty-state">
+            <div class="empty-icon">⚖️</div>
+            <div class="empty-title">Enter two drugs or conditions above</div>
+            <div class="empty-sub">You can compare two drugs, two conditions, or mix — Medveda auto‑detects the type.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="p-report">
+        <div id="c-report">
+          <div class="empty-state">
+            <div class="empty-icon">📄</div>
+            <div class="empty-title">Search first</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- GRADIENT DIVIDER -->
+    <div class="gradient-divider"></div>
+
+    <!-- FEATURED DATABASES -->
+    <section class="featured-section">
+      <div class="featured-inner">
+        <div class="section-badge">⚡ Powered By</div>
+        <h2 class="section-title">Featured <span class="gradient-word">Databases</span></h2>
+        <p class="section-sub">Medveda aggregates real-time data from 6 official medical databases — all free, no API keys required.</p>
+
+        <div class="feat-grid">
+          <div class="feat-card feat-emerald">
+            <div class="feat-icon">🏛️</div>
+            <div class="feat-name">OpenFDA</div>
+            <div class="feat-handle">api.fda.gov</div>
+            <div class="feat-desc">Official U.S. FDA adverse event reports, drug labels, and recall data from millions of real-world reports.</div>
+            <div class="feat-stats"><span>📊 12M+ reports</span><span class="feat-badge">LIVE</span></div>
+          </div>
+          <div class="feat-card feat-cyan">
+            <div class="feat-icon">🧬</div>
+            <div class="feat-name">RxNorm</div>
+            <div class="feat-handle">rxnav.nlm.nih.gov</div>
+            <div class="feat-desc">NIH drug interaction checker and clinical nomenclature. Powers the drug-to-drug interaction analysis engine.</div>
+            <div class="feat-stats"><span>🔗 Drug interactions</span><span class="feat-badge">LIVE</span></div>
+          </div>
+          <div class="feat-card feat-violet">
+            <div class="feat-icon">📚</div>
+            <div class="feat-name">MedlinePlus</div>
+            <div class="feat-handle">medlineplus.gov</div>
+            <div class="feat-desc">National Library of Medicine consumer health resources. Treatment plans and clinical therapy articles.</div>
+            <div class="feat-stats"><span>📄 Health articles</span><span class="feat-badge">LIVE</span></div>
+          </div>
+        </div>
+
+        <div class="feat-grid" style="margin-top:16px">
+          <div class="feat-card feat-rose">
+            <div class="feat-icon">💊</div>
+            <div class="feat-name">DailyMed</div>
+            <div class="feat-handle">dailymed.nlm.nih.gov</div>
+            <div class="feat-desc">Official FDA-approved drug labeling, dosage information, and manufacturer data for marketed drugs.</div>
+            <div class="feat-stats"><span>📋 Drug labels</span><span class="feat-badge">LIVE</span></div>
+          </div>
+          <div class="feat-card feat-amber">
+            <div class="feat-icon">📖</div>
+            <div class="feat-name">Wikipedia</div>
+            <div class="feat-handle">en.wikipedia.org</div>
+            <div class="feat-desc">OpenSearch-powered condition/drug overviews. Handles aliases, typos, and redirects for accurate information.</div>
+            <div class="feat-stats"><span>🌐 Encyclopedia</span><span class="feat-badge">LIVE</span></div>
+          </div>
+          <div class="feat-card feat-orange">
+            <div class="feat-icon">🇮🇳</div>
+            <div class="feat-name">MoHFW India</div>
+            <div class="feat-handle">mohfw.gov.in</div>
+            <div class="feat-desc">Indian NLEM 2022 essential medicines list, CDSCO alerts, and National Health Mission program guidelines.</div>
+            <div class="feat-stats"><span>🏥 Gov. guidelines</span><span class="feat-badge">LIVE</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="hiw-section">
+      <div class="hiw-inner">
+        <div class="section-badge">🧪 Simple & Powerful</div>
+        <h2 class="section-title">How It <span class="gradient-word">Works</span></h2>
+        <p class="section-sub">Get comprehensive medical intelligence in three simple steps — no sign-up required.</p>
+
+        <div class="hiw-grid">
+          <div class="hiw-card">
+            <div class="hiw-num">01</div>
+            <div class="hiw-icon">🔍</div>
+            <h3 class="hiw-name">Search Any Drug or Condition</h3>
+            <p class="hiw-desc">Type any drug name (e.g. Metformin, Ibuprofen) or medical condition (e.g. Diabetes, Back Pain). Medveda auto-detects the type and routes to the right analysis pipeline.</p>
+          </div>
+          <div class="hiw-connector">→</div>
+          <div class="hiw-card">
+            <div class="hiw-num">02</div>
+            <div class="hiw-icon">⚡</div>
+            <h3 class="hiw-name">Real-Time Multi-DB Analysis</h3>
+            <p class="hiw-desc">Our Python FastAPI backend queries 6 official databases in parallel — OpenFDA, RxNorm, MedlinePlus, DailyMed, Wikipedia, and MoHFW — delivering unified results in seconds.</p>
+          </div>
+          <div class="hiw-connector">→</div>
+          <div class="hiw-card">
+            <div class="hiw-num">03</div>
+            <div class="hiw-icon">📊</div>
+            <h3 class="hiw-name">Explore, Compare & Export</h3>
+            <p class="hiw-desc">View side effects, treatment plans, timelines, costs in INR/USD, drug interactions, and MoHFW guidelines. Compare two drugs or conditions, then export a full intelligence report.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREMIUM FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo" style="margin-bottom:12px">
+            <div class="logo-icon">🧬</div>
+            <div class="logo-text" style="font-size:22px">Medveda</div>
+          </div>
+          <p class="footer-tagline">The open-source medical intelligence platform where patients research treatments and students build clinical knowledge.</p>
+          <div class="footer-socials">
+            <span class="social-pill">GH</span>
+            <span class="social-pill">IN</span>
+            <span class="social-pill">TW</span>
+            <span class="social-pill">YT</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Platform</div>
+          <a href="#" onclick="App.tab('overview');return false">Drug Analysis</a>
+          <a href="#" onclick="App.tab('compare');return false">Compare Tool</a>
+          <a href="#" onclick="App.tab('cost');return false">Cost Estimator</a>
+          <a href="#" onclick="App.tab('report');return false">Export Reports</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Resources</div>
+          <a href="https://api.fda.gov" target="_blank">OpenFDA API</a>
+          <a href="https://rxnav.nlm.nih.gov" target="_blank">RxNorm API</a>
+          <a href="https://medlineplus.gov" target="_blank">MedlinePlus</a>
+          <a href="https://dailymed.nlm.nih.gov" target="_blank">DailyMed</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Support</div>
+          <a href="#">Documentation</a>
+          <a href="#">API Reference</a>
+          <a href="#">Contact</a>
+          <a href="#">Feedback</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 Medveda. All APIs are free · No API key required · Not medical advice · For educational use only.
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/particles.js"></script>
+</body>
+
+</html>
