@@ -163,4 +163,4 @@ curl -X POST http://localhost:8000/analyze \
 
 ---
 
-Built for **Prayogam Hackathon** · BCA 2nd Semester
+Built for **NEXORA'26 HACKATHON**
