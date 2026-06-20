@@ -1,4 +1,4 @@
-# 🧬 MediPulse — Multi-Database Treatment Intelligence
+# 🧬 Medveda — Multi-Database Treatment Intelligence
 
 Real medical data from **5 free APIs** combined into one dashboard.  
 No API key required. No paid services. 100% free forever.
